@@ -4,6 +4,8 @@ import AVFoundation //library that has all photo capture methods
 
 class CameraViewController : UIViewController
 {
+    
+    var captureMode = true;
     @IBOutlet weak var cameraButton: UIButton!
     @IBOutlet weak var reverseButton: UIButton!
     var captureSession = AVCaptureSession() //this is responsible for capturing the image
@@ -110,6 +112,23 @@ class CameraViewController : UIViewController
         //The goal of pressing the shutter button will be to activate camera mode and
         //have the device take the picture itself. For now, it will capture a photo
         //Just as a normal camera app would do.
+        
+        //Edited by Manoj:
+        if captureMode{
+            if let image = UIImage(named: "cancel.png") {
+                cameraButton.setImage(image, for:.normal)
+                reverseButton.isHidden = true;
+                captureMode = false;
+            }
+        } else{
+            if let image = UIImage(named: "button-shutter.png") {
+                cameraButton.setImage(image, for:.normal)
+                reverseButton.isHidden = false;
+                captureMode = true;
+            }
+        }
+        
+        
         let videoConnection = stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
         
         //capture a still image asynchronously
