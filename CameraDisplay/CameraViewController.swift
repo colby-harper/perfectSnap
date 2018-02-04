@@ -153,6 +153,11 @@ class CameraViewController : UIViewController
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showPhoto" {
+            if let image = UIImage(named: "button-shutter.png") {
+                cameraButton.setImage(image, for:.normal)
+                reverseButton.isHidden = false;
+                defaultMode = true;
+            }
             let imageViewController = segue.destination as! ImageViewController
                 imageViewController.image = self.stillImage
         }
