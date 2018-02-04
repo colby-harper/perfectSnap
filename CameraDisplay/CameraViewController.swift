@@ -5,7 +5,7 @@ import AVFoundation //library that has all photo capture methods
 class CameraViewController : UIViewController
 {
     
-    var captureMode = true;
+    var defaultMode = true;
     @IBOutlet weak var cameraButton: UIButton!
     @IBOutlet weak var reverseButton: UIButton!
     var captureSession = AVCaptureSession() //this is responsible for capturing the image
@@ -114,33 +114,40 @@ class CameraViewController : UIViewController
         //Just as a normal camera app would do.
         
         //Edited by Manoj:
-        if captureMode{
+        if defaultMode{
             if let image = UIImage(named: "cancel.png") {
                 cameraButton.setImage(image, for:.normal)
                 reverseButton.isHidden = true;
-                captureMode = false;
+                defaultMode = false;
+                //let the timer delay happen
+                let when = DispatchTime.now() + 5 // change 2 to desired number of seconds
+                DispatchQueue.main.asyncAfter(deadline: when) {
+                    // Your code with delay
+                    let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
+                    
+                    //capture a still image asynchronously
+                    self.stillImageOutput?.captureStillImageAsynchronously(from: videoConnection,
+                                                                           completionHandler: { (imageDataBuffer, error) in
+                                                                            
+                                                                            if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer:
+                                                                                imageDataBuffer!) {
+                                                                                self.stillImage = UIImage(data: imageData)
+                                                                                self.performSegue(withIdentifier: "showPhoto", sender: self)
+                                                                            }
+                    })
+                    
+                }
             }
         } else{
             if let image = UIImage(named: "button-shutter.png") {
                 cameraButton.setImage(image, for:.normal)
                 reverseButton.isHidden = false;
-                captureMode = true;
+                defaultMode = true;
             }
         }
         
-        
-        let videoConnection = stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
-        
-        //capture a still image asynchronously
-        stillImageOutput?.captureStillImageAsynchronously(from: videoConnection,
-            completionHandler: { (imageDataBuffer, error) in
-            
-            if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer:
-                imageDataBuffer!) {
-                    self.stillImage = UIImage(data: imageData)
-                    self.performSegue(withIdentifier: "showPhoto", sender: self)
-                }
-        })
+
+
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showPhoto" {
