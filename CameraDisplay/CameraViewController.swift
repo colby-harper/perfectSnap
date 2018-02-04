@@ -123,6 +123,8 @@ class CameraViewController : UIViewController
                 let when = DispatchTime.now() + 5 // change 2 to desired number of seconds
                 DispatchQueue.main.asyncAfter(deadline: when) {
                     // Your code with delay
+                    
+                    if (!self.defaultMode){
                     let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
                     
                     //capture a still image asynchronously
@@ -135,7 +137,7 @@ class CameraViewController : UIViewController
                                                                                 self.performSegue(withIdentifier: "showPhoto", sender: self)
                                                                             }
                     })
-                    
+                    }
                 }
             }
         } else{
