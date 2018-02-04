@@ -63,6 +63,25 @@ class CameraViewController : UIViewController
             view.layer.addSublayer(cameraPreviewLayer!)
             //indicates how the video is displayed within the layer bounds
             cameraPreviewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
+            
+                switch UIDevice.current.orientation{
+                case .portrait:
+                    cameraPreviewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.portrait
+                case .portraitUpsideDown:
+                    cameraPreviewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.portraitUpsideDown
+                case .landscapeLeft:
+                    cameraPreviewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.landscapeLeft
+                case .landscapeRight:
+                    cameraPreviewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.landscapeRight
+                case .unknown:
+                    cameraPreviewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.portrait
+                case .faceUp:
+                    cameraPreviewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.portrait
+                case .faceDown:
+                    cameraPreviewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.portrait
+            }
+
+
             cameraPreviewLayer?.frame = view.layer.frame
             
             //activate camera mode button
