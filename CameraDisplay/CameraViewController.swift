@@ -138,6 +138,22 @@ class CameraViewController : UIViewController
                 cameraButton.setImage(image, for:.normal)
                 reverseButton.isHidden = true;
                 defaultMode = false;
+                
+                //start capturing frames here and use model
+                //start with dataOutput
+                //then func capture output
+                
+                
+                
+                //Add delegate at the beginning
+                //Add the capturefunc similar to the video
+                
+                
+                //CoreML called from captureFunc
+                //if output of model is face, (or yes) then capture photo as done below.
+                
+                
+                
                 //let the timer delay happen
                 let when = DispatchTime.now() + 5 // change 2 to desired number of seconds
                 DispatchQueue.main.asyncAfter(deadline: when) {
