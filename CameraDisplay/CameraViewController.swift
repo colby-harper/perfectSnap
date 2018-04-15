@@ -1,10 +1,15 @@
 //View when photo has not been captured yet.
 import UIKit
 import AVFoundation //library that has all photo capture methods
+import Vision
 
 class CameraViewController : UIViewController
 {
-    
+    let shapeLayer = CAShapeLayer()
+    let faceDetection = VNDetectFaceRectanglesRequest()
+    let faceLandmarks = VNDetectFaceLandmarksRequest()
+    let faceLandmarksDetectionRequest = VNSequenceRequestHandler()
+    let faceDetectionRequest = VNSequenceRequestHandler()
     var defaultMode = true;
     @IBOutlet weak var cameraButton: UIButton!
     @IBOutlet weak var reverseButton: UIButton!
@@ -56,6 +61,9 @@ class CameraViewController : UIViewController
             //need to assign input and output devices to captureSession
             captureSession.addInput(captureCameraInput)
             captureSession.addOutput(stillImageOutput)
+            let dataOutput = AVCaptureVideoDataOutput()
+            dataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
+            captureSession.addOutput(dataOutput)
             
             //set up the camera preview layer
             cameraPreviewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
@@ -127,10 +135,6 @@ class CameraViewController : UIViewController
     
     @IBAction func shutterButtonDidTap()
     {
-        //this code will be removed when we progress.
-        //The goal of pressing the shutter button will be to activate camera mode and
-        //have the device take the picture itself. For now, it will capture a photo
-        //Just as a normal camera app would do.
         
         //Edited by Manoj:
         if defaultMode{
@@ -143,37 +147,31 @@ class CameraViewController : UIViewController
                 //start with dataOutput
                 //then func capture output
                 
-                
-                
                 //Add delegate at the beginning
                 //Add the capturefunc similar to the video
-                
                 
                 //CoreML called from captureFunc
                 //if output of model is face, (or yes) then capture photo as done below.
                 
-                
-                
-                //let the timer delay happen
-                let when = DispatchTime.now() + 5 // change 2 to desired number of seconds
-                DispatchQueue.main.asyncAfter(deadline: when) {
-                    // Your code with delay
-                    
-                    if (!self.defaultMode){
-                    let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
-                    
-                    //capture a still image asynchronously
-                    self.stillImageOutput?.captureStillImageAsynchronously(from: videoConnection,
-                                                                           completionHandler: { (imageDataBuffer, error) in
-                                                                            
-                                                                            if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer:
-                                                                                imageDataBuffer!) {
-                                                                                self.stillImage = UIImage(data: imageData)
-                                                                                self.performSegue(withIdentifier: "showPhoto", sender: self)
-                                                                            }
-                    })
-                    }
-                }
+//                if(TAKE_PHOTO == 1) {
+//                    // Your code with delay
+//
+//                    if (!self.defaultMode){
+//                        print("take photo")
+//                    let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
+//
+//                    //capture a still image asynchronously
+//                    self.stillImageOutput?.captureStillImageAsynchronously(from: videoConnection,
+//                                                                           completionHandler: { (imageDataBuffer, error) in
+//
+//                                                                            if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer:
+//                                                                                imageDataBuffer!) {
+//                                                                                self.stillImage = UIImage(data: imageData)
+//                                                                                self.performSegue(withIdentifier: "showPhoto", sender: self)
+//                                                                            }
+//                    })
+//                    }
+//                }
             }
         } else{
             if let image = UIImage(named: "button-shutter.png") {
@@ -197,4 +195,73 @@ class CameraViewController : UIViewController
                 imageViewController.image = self.stillImage
         }
     }
+
+}
+extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
+    
+    func captureOutput(_ output: AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        
+        let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+        
+        let attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate)
+        let ciImage = CIImage(cvImageBuffer: pixelBuffer!, options: attachments as! [String : Any]?)
+        
+        //leftMirrored for front camera
+        let ciImageWithOrientation = ciImage.applyingOrientation(Int32(UIImageOrientation.leftMirrored.rawValue))
+        
+        detectFace(on: ciImageWithOrientation)
+    }
+    
+}
+
+extension CameraViewController {
+    
+    func detectFace(on image: CIImage) {
+        try? faceDetectionRequest.perform([faceDetection], on: image)
+        if let results = faceDetection.results as? [VNFaceObservation] {
+            if !results.isEmpty {
+                if (!self.defaultMode){
+                    print("take photo")
+                    let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
+                    
+                    //capture a still image asynchronously
+                    self.stillImageOutput?.captureStillImageAsynchronously(from: videoConnection,
+                                                                           completionHandler: { (imageDataBuffer, error) in
+                                                                            
+                                                                            if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer:
+                                                                                imageDataBuffer!) {
+                                                                                self.stillImage = UIImage(data: imageData)
+                                                                                self.performSegue(withIdentifier: "showPhoto", sender: self)
+                                                                            }
+                    })
+                }
+                faceLandmarks.inputFaceObservations = results
+                detectLandmarks(on: image)
+                
+                DispatchQueue.main.async {
+                    self.shapeLayer.sublayers?.removeAll()
+                }
+            }
+        }
+    }
+    
+    func detectLandmarks(on image: CIImage) {
+        try? faceLandmarksDetectionRequest.perform([faceLandmarks], on: image)
+        if let landmarksResults = faceLandmarks.results as? [VNFaceObservation] {
+            for observation in landmarksResults {
+                DispatchQueue.main.async {
+                    if let boundingBox = self.faceLandmarks.inputFaceObservations?.first?.boundingBox {
+//                        let faceBoundingBox = boundingBox.scaled(to: self.view.bounds.size)
+//
+//                        //different types of landmarks
+//                        let faceContour = observation.landmarks?.faceContour
+//                        //self.convertPointsForFace(faceContour, faceBoundingBox)
+//
+//                        let rightEye = observation.landmarks?.rightEye
+//                        //self.convertPointsForFace(rightEye, faceBoundingBox)
+                    }
+                }
+            }
+        }
+}
 }
