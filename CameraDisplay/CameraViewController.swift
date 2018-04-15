@@ -1,8 +1,10 @@
 //View when photo has not been captured yet.
 import UIKit
 import AVFoundation //library that has all photo capture methods
+import AVKit
+import Vision
 
-class CameraViewController : UIViewController
+class CameraViewController : UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate
 {
     
     var defaultMode = true;
@@ -132,6 +134,17 @@ class CameraViewController : UIViewController
         //have the device take the picture itself. For now, it will capture a photo
         //Just as a normal camera app would do.
         
+        //Added by Manoj:
+        //Saving the capturesession for the real-time camera detection
+        //May contain redundant work
+        //Determining what the camera is seeing from our application
+        
+        //dataOutput helps us monitor what's happening every time a frame is being captured
+        let dataOutput = AVCaptureVideoDataOutput()
+        dataOutput.setSampleBufferDelegate(self, queue: DispatchQueue(label: "videoQueue"))
+        captureSession.addOutput(dataOutput)
+        
+        
         //Edited by Manoj:
         if defaultMode{
             if let image = UIImage(named: "cancel.png") {
@@ -196,5 +209,24 @@ class CameraViewController : UIViewController
             let imageViewController = segue.destination as! ImageViewController
                 imageViewController.image = self.stillImage
         }
+    }
+    
+    func captureOutput(_ output: AVCaptureOutput!, didDrop sampleBuffer: CMSampleBuffer!, from connection: AVCaptureConnection!) {
+        print("Camera was able to capture the frame",Date())
+        /*
+        guard let pixelBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else{
+            return
+        }
+        if #available(iOS 11.0, *) {
+            guard let model = try? VNCoreMLModel(for: Inceptionv3().model) else{ return }
+            let request = VNCoreMLRequest(model: model) { (finishedReq, err) in
+                //perhaps check the error
+                print(finishedReq.results)
+            }
+            try? VNImageRequestHandler(cvPixelBuffer: pixelBuffer, options: [:]).perform([request])
+        } else {
+            // Fallback on earlier versions
+        }
+        */
     }
 }

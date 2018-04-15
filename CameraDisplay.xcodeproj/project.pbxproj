@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F1783A1207D985E0050826D /* Inceptionv3.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 3F1783A0207D985E0050826D /* Inceptionv3.mlmodel */; };
 		529264531F441D3700B47D4F /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529264521F441D3700B47D4F /* CameraViewController.swift */; };
 		529264551F441D4F00B47D4F /* ImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 529264541F441D4F00B47D4F /* ImageViewController.swift */; };
 		52E520341F441C8D00DAFFFE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52E520331F441C8D00DAFFFE /* AppDelegate.swift */; };
@@ -16,6 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3F1783A0207D985E0050826D /* Inceptionv3.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = Inceptionv3.mlmodel; sourceTree = "<group>"; };
 		529264521F441D3700B47D4F /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		529264541F441D4F00B47D4F /* ImageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewController.swift; sourceTree = "<group>"; };
 		52E520301F441C8D00DAFFFE /* CameraDisplay.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CameraDisplay.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -62,6 +64,7 @@
 				52E520371F441C8D00DAFFFE /* Main.storyboard */,
 				52E5203A1F441C8D00DAFFFE /* Assets.xcassets */,
 				52E5203C1F441C8D00DAFFFE /* LaunchScreen.storyboard */,
+				3F1783A0207D985E0050826D /* Inceptionv3.mlmodel */,
 				52E5203F1F441C8D00DAFFFE /* Info.plist */,
 			);
 			path = CameraDisplay;
@@ -99,7 +102,7 @@
 				TargetAttributes = {
 					52E5202F1F441C8D00DAFFFE = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = D87Y784XK9;
+						DevelopmentTeam = 7XLCZXR5U8;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -141,6 +144,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				52E520341F441C8D00DAFFFE /* AppDelegate.swift in Sources */,
+				3F1783A1207D985E0050826D /* Inceptionv3.mlmodel in Sources */,
 				529264551F441D4F00B47D4F /* ImageViewController.swift in Sources */,
 				529264531F441D3700B47D4F /* CameraViewController.swift in Sources */,
 			);
@@ -265,10 +269,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = D87Y784XK9;
+				DEVELOPMENT_TEAM = 7XLCZXR5U8;
 				INFOPLIST_FILE = "$(SRCROOT)/CameraDisplay/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = colbyharper.camera.display;
+				PRODUCT_BUNDLE_IDENTIFIER = manojadhikari.camera.display;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -279,10 +283,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = D87Y784XK9;
+				DEVELOPMENT_TEAM = 7XLCZXR5U8;
 				INFOPLIST_FILE = "$(SRCROOT)/CameraDisplay/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = colbyharper.camera.display;
+				PRODUCT_BUNDLE_IDENTIFIER = manojadhikari.camera.display;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
