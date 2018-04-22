@@ -2,6 +2,8 @@
 import UIKit
 import AVFoundation //library that has all photo capture methods
 import Vision
+import CoreImage
+import ImageIO
 
 class CameraViewController : UIViewController
 {
@@ -14,6 +16,8 @@ class CameraViewController : UIViewController
     @IBOutlet weak var cameraButton: UIButton!
     @IBOutlet weak var reverseButton: UIButton!
     var captureSession = AVCaptureSession() //this is responsible for capturing the image
+    
+    let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: faceDetectorOptions)
     
     //which camera input (front or back)
     var backCamera: AVCaptureDevice? //? makes it optional
@@ -198,6 +202,7 @@ class CameraViewController : UIViewController
 
 }
 extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
+    var options : [String : AnyObject]?
     
     func captureOutput(_ output: AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
@@ -222,7 +227,7 @@ extension CameraViewController {
             if !results.isEmpty {
                 
                 
-                print(results.count)
+                //print(results.count)
                 let accuracy = [CIDetectorAccuracy : CIDetectorAccuracyHigh]
                 let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: accuracy)
                 let faces = faceDetector?.features(in: image, options:[CIDetectorSmile:true])
@@ -249,9 +254,14 @@ extension CameraViewController {
                         }
                     }
                 }
+                options = [CIDetectorSmile : true, CIDetectorEyeBlink: true, CIDetectorImageOrientation : 6]
+                
+                let features = self.faceDetector!.featuresInImage(image, options: options)
                 
                 if(numOfSmiles == numOfEyesOpen && numOfSmiles == faces?.count){
-                     capturePhoto = true
+                    //capturePhoto = true
+                     faceLandmarks.inputFaceObservations = results
+                     detectLandmarks(on: image)
                 }
                 
             if(capturePhoto){
@@ -271,8 +281,8 @@ extension CameraViewController {
                                                                             }
                     })
                 }
-                faceLandmarks.inputFaceObservations = results
-                detectLandmarks(on: image)
+                //faceLandmarks.inputFaceObservations = results
+                //detectLandmarks(on: image)
                 
                 DispatchQueue.main.async {
                     self.shapeLayer.sublayers?.removeAll()
@@ -294,8 +304,27 @@ extension CameraViewController {
 //                        let faceContour = observation.landmarks?.faceContour
 //                        //self.convertPointsForFace(faceContour, faceBoundingBox)
 //
-//                        let rightEye = observation.landmarks?.rightEye
+                        //let rightEye = observation.landmarks?.rightPupil
+                        //let leftEye = observation.landmarks?.leftPupil
+                        if (observation.landmarks?.rightPupil) != nil {
+                            if (!self.defaultMode){
+                                print("take photo")
+                                let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
+                                
+                                //capture a still image asynchronously
+                                self.stillImageOutput?.captureStillImageAsynchronously(from: videoConnection,
+                                                                                       completionHandler: { (imageDataBuffer, error) in
+                                                                                        
+                                                                                        if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer:
+                                                                                            imageDataBuffer!) {
+                                                                                            self.stillImage = UIImage(data: imageData)
+                                                                                            self.performSegue(withIdentifier: "showPhoto", sender: self)
+                                                                                        }
+                                })
+                            }
+                        }
 //                        //self.convertPointsForFace(rightEye, faceBoundingBox)
+                        
                     }
                 }
             }
