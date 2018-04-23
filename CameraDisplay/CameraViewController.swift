@@ -2,6 +2,7 @@
 import UIKit
 import AVFoundation //library that has all photo capture methods
 import Vision
+import CoreML
 
 class CameraViewController : UIViewController
 {
@@ -71,7 +72,7 @@ class CameraViewController : UIViewController
             view.layer.addSublayer(cameraPreviewLayer!)
             //indicates how the video is displayed within the layer bounds
             cameraPreviewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
-            
+                //TODO
                 switch UIDevice.current.orientation{
                 case .portrait:
                     cameraPreviewLayer?.connection.videoOrientation = AVCaptureVideoOrientation.portrait
@@ -142,36 +143,6 @@ class CameraViewController : UIViewController
                 cameraButton.setImage(image, for:.normal)
                 reverseButton.isHidden = true;
                 defaultMode = false;
-                
-                //start capturing frames here and use model
-                //start with dataOutput
-                //then func capture output
-                
-                //Add delegate at the beginning
-                //Add the capturefunc similar to the video
-                
-                //CoreML called from captureFunc
-                //if output of model is face, (or yes) then capture photo as done below.
-                
-//                if(TAKE_PHOTO == 1) {
-//                    // Your code with delay
-//
-//                    if (!self.defaultMode){
-//                        print("take photo")
-//                    let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
-//
-//                    //capture a still image asynchronously
-//                    self.stillImageOutput?.captureStillImageAsynchronously(from: videoConnection,
-//                                                                           completionHandler: { (imageDataBuffer, error) in
-//
-//                                                                            if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer:
-//                                                                                imageDataBuffer!) {
-//                                                                                self.stillImage = UIImage(data: imageData)
-//                                                                                self.performSegue(withIdentifier: "showPhoto", sender: self)
-//                                                                            }
-//                    })
-//                    }
-//                }
             }
         } else{
             if let image = UIImage(named: "button-shutter.png") {
@@ -180,8 +151,6 @@ class CameraViewController : UIViewController
                 defaultMode = true;
             }
         }
-        
-
 
     }
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -217,10 +186,21 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 extension CameraViewController {
     
     func detectFace(on image: CIImage) {
+        let pixelBuffer = image.pixelBuffer
         try? faceDetectionRequest.perform([faceDetection], on: image)
         if let results = faceDetection.results as? [VNFaceObservation] {
             if !results.isEmpty {
-                
+                //model code
+                guard let model = try? VNCoreMLModel(for: CNNEmotions().model) else{
+                    fatalError("Loading CoreML model failed")
+                }
+                let request = VNCoreMLRequest(model: model, completionHandler: myResultsMethod)
+                let handler = VNImageRequestHandler(ciImage: image)
+                do{
+                    try! handler.perform([request])
+                }catch{
+                    print(error)
+                }
                 
                 print(results.count)
                 let accuracy = [CIDetectorAccuracy : CIDetectorAccuracyHigh]
@@ -264,11 +244,11 @@ extension CameraViewController {
                     self.stillImageOutput?.captureStillImageAsynchronously(from: videoConnection,
                                                                            completionHandler: { (imageDataBuffer, error) in
                                                                             
-                                                                            if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer:
-                                                                                imageDataBuffer!) {
-                                                                                self.stillImage = UIImage(data: imageData)
-                                                                                self.performSegue(withIdentifier: "showPhoto", sender: self)
-                                                                            }
+                                                    if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer:
+                                                        imageDataBuffer!) {
+                                                        self.stillImage = UIImage(data: imageData)
+                                                        self.performSegue(withIdentifier: "showPhoto", sender: self)
+                                                    }
                     })
                 }
                 faceLandmarks.inputFaceObservations = results
@@ -300,5 +280,16 @@ extension CameraViewController {
                 }
             }
         }
-}
+    }
+    
+    //handle model request. print out confidence
+    func myResultsMethod(request: VNRequest, error: Error?) {
+        guard let results = request.results as? [VNClassificationObservation]
+            else { fatalError("huh") }
+        for classification in results {
+            print(classification.identifier, // the scene label
+                classification.confidence)
+        }
+        
+    }
 }

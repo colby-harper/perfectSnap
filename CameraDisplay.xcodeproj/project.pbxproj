@@ -13,6 +13,7 @@
 		52E520391F441C8D00DAFFFE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52E520371F441C8D00DAFFFE /* Main.storyboard */; };
 		52E5203B1F441C8D00DAFFFE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52E5203A1F441C8D00DAFFFE /* Assets.xcassets */; };
 		52E5203E1F441C8D00DAFFFE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52E5203C1F441C8D00DAFFFE /* LaunchScreen.storyboard */; };
+		A3377840208D8E840018DB2F /* CNNEmotions.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = A337783F208D8E840018DB2F /* CNNEmotions.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -24,6 +25,7 @@
 		52E5203A1F441C8D00DAFFFE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		52E5203D1F441C8D00DAFFFE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		52E5203F1F441C8D00DAFFFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A337783F208D8E840018DB2F /* CNNEmotions.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = CNNEmotions.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +60,7 @@
 			children = (
 				52E520331F441C8D00DAFFFE /* AppDelegate.swift */,
 				529264521F441D3700B47D4F /* CameraViewController.swift */,
+				A337783F208D8E840018DB2F /* CNNEmotions.mlmodel */,
 				529264541F441D4F00B47D4F /* ImageViewController.swift */,
 				52E520371F441C8D00DAFFFE /* Main.storyboard */,
 				52E5203A1F441C8D00DAFFFE /* Assets.xcassets */,
@@ -99,7 +102,7 @@
 				TargetAttributes = {
 					52E5202F1F441C8D00DAFFFE = {
 						CreatedOnToolsVersion = 8.3.2;
-						DevelopmentTeam = 7XLCZXR5U8;
+						DevelopmentTeam = D87Y784XK9;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -140,6 +143,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3377840208D8E840018DB2F /* CNNEmotions.mlmodel in Sources */,
 				52E520341F441C8D00DAFFFE /* AppDelegate.swift in Sources */,
 				529264551F441D4F00B47D4F /* ImageViewController.swift in Sources */,
 				529264531F441D3700B47D4F /* CameraViewController.swift in Sources */,
@@ -265,11 +269,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 7XLCZXR5U8;
+				DEVELOPMENT_TEAM = D87Y784XK9;
 				INFOPLIST_FILE = "$(SRCROOT)/CameraDisplay/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = manojadhikari.camera.display;
+				PRODUCT_BUNDLE_IDENTIFIER = colbyharper.camera.display;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -280,11 +284,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 7XLCZXR5U8;
+				DEVELOPMENT_TEAM = D87Y784XK9;
 				INFOPLIST_FILE = "$(SRCROOT)/CameraDisplay/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = manojadhikari.camera.display;
+				PRODUCT_BUNDLE_IDENTIFIER = colbyharper.camera.display;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
