@@ -220,6 +220,42 @@ extension CameraViewController {
         try? faceDetectionRequest.perform([faceDetection], on: image)
         if let results = faceDetection.results as? [VNFaceObservation] {
             if !results.isEmpty {
+                
+                
+                print(results.count)
+                let accuracy = [CIDetectorAccuracy : CIDetectorAccuracyHigh]
+                let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: accuracy)
+                let faces = faceDetector?.features(in: image, options:[CIDetectorSmile:true])
+                
+                //Added by Manoj
+                //Convert faces into an array of faces
+                
+                //Only move forward if all the faces are smiling
+                var numOfFaces = faces?.count
+                var numOfSmiles = 0
+                var numOfEyesOpen = 0
+                
+                var capturePhoto = false
+                if !faces!.isEmpty{
+                    for face in faces as! [CIFaceFeature]{
+                        var bothEyesOpen = true
+                        if !face.hasLeftEyePosition || !face.hasRightEyePosition{
+                            bothEyesOpen = false
+                        }
+                        
+                        if(face.hasSmile && bothEyesOpen){
+                            numOfSmiles += 1
+                            numOfEyesOpen += 1
+                        }
+                    }
+                }
+                
+                if(numOfSmiles == numOfEyesOpen && numOfSmiles == faces?.count){
+                     capturePhoto = true
+                }
+                
+            if(capturePhoto){
+                
                 if (!self.defaultMode){
                     print("take photo")
                     let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
@@ -241,6 +277,7 @@ extension CameraViewController {
                 DispatchQueue.main.async {
                     self.shapeLayer.sublayers?.removeAll()
                 }
+            }
             }
         }
     }
