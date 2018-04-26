@@ -190,19 +190,26 @@ extension CameraViewController {
         try? faceDetectionRequest.perform([faceDetection], on: image)
         if let results = faceDetection.results as? [VNFaceObservation] {
             if !results.isEmpty {
-                //model code
-                guard let model = try? VNCoreMLModel(for: CNNEmotions().model) else{
-                    fatalError("Loading CoreML model failed")
-                }
-                let request = VNCoreMLRequest(model: model, completionHandler: myResultsMethod)
-                let handler = VNImageRequestHandler(ciImage: image)
-                do{
-                    try! handler.perform([request])
-                }catch{
-                    print(error)
+                
+                let originalPic = convert(cmage: image)
+                let img_faces = detectFaces(from: originalPic)
+                for face in img_faces{
+                    
+                    guard let this_ciimage = CIImage(image: face) else { return }
+                    
+                    guard let model = try? VNCoreMLModel(for: CNNEmotions().model) else{
+                        fatalError("Loading CoreML model failed")
+                    }
+                    let request = VNCoreMLRequest(model: model, completionHandler: myResultsMethod)
+                    let handler = VNImageRequestHandler(ciImage: this_ciimage)
+                    do{
+                        try! handler.perform([request])
+                    }catch{
+                        print(error)
+                    }
                 }
                 
-                print(results.count)
+                //print(results.count)
                 let accuracy = [CIDetectorAccuracy : CIDetectorAccuracyHigh]
                 let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: accuracy)
                 let faces = faceDetector?.features(in: image, options:[CIDetectorSmile:true])
@@ -237,7 +244,7 @@ extension CameraViewController {
             if(capturePhoto){
                 
                 if (!self.defaultMode){
-                    print("take photo")
+                    //print("take photo")
                     let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
                     
                     //capture a still image asynchronously
@@ -260,6 +267,14 @@ extension CameraViewController {
             }
             }
         }
+    }
+    
+    func convert(cmage:CIImage) -> UIImage
+    {
+        let context:CIContext = CIContext.init(options: nil)
+        let cgImage:CGImage = context.createCGImage(cmage, from: cmage.extent)!
+        let image:UIImage = UIImage.init(cgImage: cgImage)
+        return image
     }
     
     func detectLandmarks(on image: CIImage) {
@@ -291,5 +306,45 @@ extension CameraViewController {
                 classification.confidence)
         }
         
+    }
+    
+    func detectFaces(from image: UIImage) -> [UIImage] {
+        guard let ciimage = CIImage(image: image) else { return [] }
+        var orientation: NSNumber {
+            switch image.imageOrientation {
+            case .up:            return 1
+            case .upMirrored:    return 2
+            case .down:          return 3
+            case .downMirrored:  return 4
+            case .leftMirrored:  return 5
+            case .right:         return 6
+            case .rightMirrored: return 7
+            case .left:          return 8
+            }
+        }
+        return CIDetector(ofType: CIDetectorTypeFace, context: nil, options: [CIDetectorAccuracy: CIDetectorAccuracyLow])?
+            .features(in: ciimage, options: [CIDetectorImageOrientation: orientation])
+            .flatMap {
+                let rect = $0.bounds.insetBy(dx: -10, dy: -10)
+                let ciimage = ciimage.cropping(to: rect)
+                UIGraphicsBeginImageContextWithOptions(rect.size, false, image.scale)
+                defer { UIGraphicsEndImageContext() }
+                UIImage(ciImage: ciimage).draw(in: CGRect(origin: .zero, size: rect.size))
+                guard let face = UIGraphicsGetImageFromCurrentImageContext() else { return nil }
+                // now that you have your face image you need to properly apply a circle mask to it
+                let size = face.size
+                let breadth = min(size.width, size.height)
+                let breadthSize = CGSize(width: breadth, height: breadth)
+                UIGraphicsBeginImageContextWithOptions(breadthSize, false, image.scale)
+                defer { UIGraphicsEndImageContext() }
+                guard let cgImage = face.cgImage?.cropping(to: CGRect(origin:
+                    CGPoint(x: size.width > size.height ? (size.width-size.height).rounded(.down).divided(by: 2) : 0,
+                            y: size.height > size.width ? (size.height-size.width).rounded(.down).divided(by: 2) : 0),
+                                                                      size: breadthSize)) else { return nil }
+                let faceRect = CGRect(origin: .zero, size: CGSize(width: min(size.width, size.height), height: min(size.width, size.height)))
+                UIBezierPath(ovalIn: faceRect).addClip()
+                UIImage(cgImage: cgImage).draw(in: faceRect)
+                return UIGraphicsGetImageFromCurrentImageContext()
+            } ?? []
     }
 }
