@@ -218,27 +218,25 @@ extension CameraViewController {
                 //Convert faces into an array of faces
                 
                 //Only move forward if all the faces are smiling
-                var numOfFaces = faces?.count
                 var numOfSmiles = 0
-                var numOfEyesOpen = 0
+                //var numOfEyesOpen = 0
                 
                 var capturePhoto = false
                 if !faces!.isEmpty{
                     for face in faces as! [CIFaceFeature]{
-                        var bothEyesOpen = true
-                        if !face.hasLeftEyePosition || !face.hasRightEyePosition{
-                            bothEyesOpen = false
-                        }
+                        //var bothEyesOpen = true
+                        //if !face.hasLeftEyePosition || !face.hasRightEyePosition{
+                        //    bothEyesOpen = false
+                        //}
                         
-                        if(face.hasSmile && bothEyesOpen){
+                        if(face.hasSmile){
                             numOfSmiles += 1
-                            numOfEyesOpen += 1
+                            //numOfEyesOpen += 1
                         }
                     }
-                }
-                
-                if(numOfSmiles == numOfEyesOpen && numOfSmiles == faces?.count){
-                     capturePhoto = true
+                    if(numOfSmiles == faces?.count){
+                        capturePhoto = true
+                    }
                 }
                 
             if(capturePhoto){
