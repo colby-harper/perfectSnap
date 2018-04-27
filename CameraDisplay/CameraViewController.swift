@@ -186,7 +186,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 extension CameraViewController {
     
     func detectFace(on image: CIImage) {
-        let pixelBuffer = image.pixelBuffer
+        //let pixelBuffer = image.pixelBuffer
         try? faceDetectionRequest.perform([faceDetection], on: image)
         if let results = faceDetection.results as? [VNFaceObservation] {
             if !results.isEmpty {
@@ -204,9 +204,9 @@ extension CameraViewController {
                     let handler = VNImageRequestHandler(ciImage: this_ciimage)
                     do{
                         try! handler.perform([request])
-                    }catch{
-                        print(error)
-                    }
+                    }//catch{
+                       // print(error)
+                    //}
                 }
                 
                 //print(results.count)
@@ -277,26 +277,6 @@ extension CameraViewController {
         return image
     }
     
-    func detectLandmarks(on image: CIImage) {
-        try? faceLandmarksDetectionRequest.perform([faceLandmarks], on: image)
-        if let landmarksResults = faceLandmarks.results as? [VNFaceObservation] {
-            for observation in landmarksResults {
-                DispatchQueue.main.async {
-                    if let boundingBox = self.faceLandmarks.inputFaceObservations?.first?.boundingBox {
-//                        let faceBoundingBox = boundingBox.scaled(to: self.view.bounds.size)
-//
-//                        //different types of landmarks
-//                        let faceContour = observation.landmarks?.faceContour
-//                        //self.convertPointsForFace(faceContour, faceBoundingBox)
-//
-//                        let rightEye = observation.landmarks?.rightEye
-//                        //self.convertPointsForFace(rightEye, faceBoundingBox)
-                    }
-                }
-            }
-        }
-    }
-    
     //handle model request. print out confidence
     func myResultsMethod(request: VNRequest, error: Error?) {
         guard let results = request.results as? [VNClassificationObservation]
@@ -346,5 +326,25 @@ extension CameraViewController {
                 UIImage(cgImage: cgImage).draw(in: faceRect)
                 return UIGraphicsGetImageFromCurrentImageContext()
             } ?? []
+    }
+    
+    func detectLandmarks(on image: CIImage) {
+        try? faceLandmarksDetectionRequest.perform([faceLandmarks], on: image)
+        if let landmarksResults = faceLandmarks.results as? [VNFaceObservation] {
+            for observation in landmarksResults {
+                DispatchQueue.main.async {
+                    if let boundingBox = self.faceLandmarks.inputFaceObservations?.first?.boundingBox {
+                        //                        let faceBoundingBox = boundingBox.scaled(to: self.view.bounds.size)
+                        //
+                        //                        //different types of landmarks
+                        //                        let faceContour = observation.landmarks?.faceContour
+                        //                        //self.convertPointsForFace(faceContour, faceBoundingBox)
+                        //
+                        //                        let rightEye = observation.landmarks?.rightEye
+                        //                        //self.convertPointsForFace(rightEye, faceBoundingBox)
+                    }
+                }
+            }
+        }
     }
 }
