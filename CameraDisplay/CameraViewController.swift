@@ -189,6 +189,8 @@ extension CameraViewController {
         //let pixelBuffer = image.pixelBuffer
         try? faceDetectionRequest.perform([faceDetection], on: image)
         if let results = faceDetection.results as? [VNFaceObservation] {
+            var all_smiles = false
+            var all_eyes = false
             if !results.isEmpty {
                 //machine learning model
                 let originalPic = convert(cmage: image)
@@ -221,7 +223,7 @@ extension CameraViewController {
                 var numOfSmiles = 0
                 //var numOfEyesOpen = 0
                 
-                var all_smiles = false
+                //var all_smiles = false
                 if !faces!.isEmpty{
                     for face in faces as! [CIFaceFeature]{
                         //var bothEyesOpen = true
@@ -239,7 +241,7 @@ extension CameraViewController {
                     }
                 }
                 
-            if(all_smiles){
+            if(all_smiles && all_eyes){
                 
                 if (!self.defaultMode){
                     //print("take photo")
