@@ -13,7 +13,13 @@
 		52E520391F441C8D00DAFFFE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52E520371F441C8D00DAFFFE /* Main.storyboard */; };
 		52E5203B1F441C8D00DAFFFE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52E5203A1F441C8D00DAFFFE /* Assets.xcassets */; };
 		52E5203E1F441C8D00DAFFFE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 52E5203C1F441C8D00DAFFFE /* LaunchScreen.storyboard */; };
-		A3377840208D8E840018DB2F /* CNNEmotions.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = A337783F208D8E840018DB2F /* CNNEmotions.mlmodel */; };
+		A3577DE320954E0700FD7D75 /* eyesClassifier4.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = A3577DE220954E0700FD7D75 /* eyesClassifier4.mlmodel */; };
+		A3577DE52095520700FD7D75 /* eyesClassifier5.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = A3577DE42095520700FD7D75 /* eyesClassifier5.mlmodel */; };
+		A3577DE720966A7C00FD7D75 /* eyesClassifier7.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = A3577DE620966A7C00FD7D75 /* eyesClassifier7.mlmodel */; };
+		A3577DE920967C3C00FD7D75 /* eyesClassifier8.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = A3577DE820967C3C00FD7D75 /* eyesClassifier8.mlmodel */; };
+		A3577DEB20968EE800FD7D75 /* eyesClassifier10.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = A3577DEA20968EE800FD7D75 /* eyesClassifier10.mlmodel */; };
+		A3577DED20968F7600FD7D75 /* CNNEmotions.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = A3577DEC20968F7600FD7D75 /* CNNEmotions.mlmodel */; };
+		A3577DEF20968FD900FD7D75 /* eyesClassifier.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = A3577DEE20968FD900FD7D75 /* eyesClassifier.mlmodel */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,7 +31,13 @@
 		52E5203A1F441C8D00DAFFFE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		52E5203D1F441C8D00DAFFFE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		52E5203F1F441C8D00DAFFFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		A337783F208D8E840018DB2F /* CNNEmotions.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = CNNEmotions.mlmodel; sourceTree = "<group>"; };
+		A3577DE220954E0700FD7D75 /* eyesClassifier4.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = eyesClassifier4.mlmodel; sourceTree = "<group>"; };
+		A3577DE42095520700FD7D75 /* eyesClassifier5.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = eyesClassifier5.mlmodel; sourceTree = "<group>"; };
+		A3577DE620966A7C00FD7D75 /* eyesClassifier7.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = eyesClassifier7.mlmodel; sourceTree = "<group>"; };
+		A3577DE820967C3C00FD7D75 /* eyesClassifier8.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = eyesClassifier8.mlmodel; sourceTree = "<group>"; };
+		A3577DEA20968EE800FD7D75 /* eyesClassifier10.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = eyesClassifier10.mlmodel; sourceTree = "<group>"; };
+		A3577DEC20968F7600FD7D75 /* CNNEmotions.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = CNNEmotions.mlmodel; sourceTree = "<group>"; };
+		A3577DEE20968FD900FD7D75 /* eyesClassifier.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = eyesClassifier.mlmodel; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,7 +72,13 @@
 			children = (
 				52E520331F441C8D00DAFFFE /* AppDelegate.swift */,
 				529264521F441D3700B47D4F /* CameraViewController.swift */,
-				A337783F208D8E840018DB2F /* CNNEmotions.mlmodel */,
+				A3577DEE20968FD900FD7D75 /* eyesClassifier.mlmodel */,
+				A3577DE220954E0700FD7D75 /* eyesClassifier4.mlmodel */,
+				A3577DE42095520700FD7D75 /* eyesClassifier5.mlmodel */,
+				A3577DE620966A7C00FD7D75 /* eyesClassifier7.mlmodel */,
+				A3577DEC20968F7600FD7D75 /* CNNEmotions.mlmodel */,
+				A3577DEA20968EE800FD7D75 /* eyesClassifier10.mlmodel */,
+				A3577DE820967C3C00FD7D75 /* eyesClassifier8.mlmodel */,
 				529264541F441D4F00B47D4F /* ImageViewController.swift */,
 				52E520371F441C8D00DAFFFE /* Main.storyboard */,
 				52E5203A1F441C8D00DAFFFE /* Assets.xcassets */,
@@ -143,10 +161,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A3377840208D8E840018DB2F /* CNNEmotions.mlmodel in Sources */,
 				52E520341F441C8D00DAFFFE /* AppDelegate.swift in Sources */,
 				529264551F441D4F00B47D4F /* ImageViewController.swift in Sources */,
+				A3577DE320954E0700FD7D75 /* eyesClassifier4.mlmodel in Sources */,
+				A3577DEF20968FD900FD7D75 /* eyesClassifier.mlmodel in Sources */,
+				A3577DED20968F7600FD7D75 /* CNNEmotions.mlmodel in Sources */,
 				529264531F441D3700B47D4F /* CameraViewController.swift in Sources */,
+				A3577DEB20968EE800FD7D75 /* eyesClassifier10.mlmodel in Sources */,
+				A3577DE52095520700FD7D75 /* eyesClassifier5.mlmodel in Sources */,
+				A3577DE720966A7C00FD7D75 /* eyesClassifier7.mlmodel in Sources */,
+				A3577DE920967C3C00FD7D75 /* eyesClassifier8.mlmodel in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

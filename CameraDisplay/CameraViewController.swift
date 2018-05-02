@@ -193,23 +193,32 @@ extension CameraViewController {
             var all_eyes = false
             if !results.isEmpty {
                 //machine learning model
-                let originalPic = convert(cmage: image)
-                let img_faces = detectFaces(from: originalPic)
-                for face in img_faces{
-                    
-                    guard let this_ciimage = CIImage(image: face) else { return }
-                    
-                    guard let model = try? VNCoreMLModel(for: CNNEmotions().model) else{
-                        fatalError("Loading CoreML model failed")
-                    }
-                    let request = VNCoreMLRequest(model: model, completionHandler: myResultsMethod)
-                    let handler = VNImageRequestHandler(ciImage: this_ciimage)
-                    do{
-                        try! handler.perform([request])
-                    }//catch{
-                       // print(error)
-                    //}
+                guard let model = try? VNCoreMLModel(for: eyesClassifier10().model) else {
+                    fatalError("Loading CoreML model failed")
                 }
+                let request = VNCoreMLRequest(model: model, completionHandler: myResultsMethod)
+                let handler = VNImageRequestHandler(ciImage: image)
+                                    do{
+                                        try! handler.perform([request])
+                                    }
+                
+//                let originalPic = convert(cmage: image)
+//                let img_faces = detectFaces(from: originalPic)
+//                for face in img_faces{
+//
+//                    guard let this_ciimage = CIImage(image: face) else { return }
+//
+//                    guard let model = try? VNCoreMLModel(for: CNNEmotions().model) else{
+//                        fatalError("Loading CoreML model failed")
+//                    }
+//                    let request = VNCoreMLRequest(model: model, completionHandler: myResultsMethod)
+//                    let handler = VNImageRequestHandler(ciImage: this_ciimage)
+//                    do{
+//                        try! handler.perform([request])
+//                    }//catch{
+//                       // print(error)
+//                    //}
+//                }
                 
                 //print(results.count)
                 let accuracy = [CIDetectorAccuracy : CIDetectorAccuracyHigh]
