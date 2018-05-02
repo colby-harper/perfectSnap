@@ -188,37 +188,48 @@ extension CameraViewController {
     func detectFace(on image: CIImage) {
         //let pixelBuffer = image.pixelBuffer
         try? faceDetectionRequest.perform([faceDetection], on: image)
+        sleep(4)
         if let results = faceDetection.results as? [VNFaceObservation] {
             var all_smiles = false
             var all_eyes = false
             if !results.isEmpty {
                 //machine learning model
-                guard let model = try? VNCoreMLModel(for: eyesClassifier10().model) else {
-                    fatalError("Loading CoreML model failed")
-                }
-                let request = VNCoreMLRequest(model: model, completionHandler: myResultsMethod)
-                let handler = VNImageRequestHandler(ciImage: image)
-                                    do{
-                                        try! handler.perform([request])
-                                    }
-                
-//                let originalPic = convert(cmage: image)
-//                let img_faces = detectFaces(from: originalPic)
-//                for face in img_faces{
-//
-//                    guard let this_ciimage = CIImage(image: face) else { return }
-//
-//                    guard let model = try? VNCoreMLModel(for: CNNEmotions().model) else{
-//                        fatalError("Loading CoreML model failed")
-//                    }
-//                    let request = VNCoreMLRequest(model: model, completionHandler: myResultsMethod)
-//                    let handler = VNImageRequestHandler(ciImage: this_ciimage)
-//                    do{
-//                        try! handler.perform([request])
-//                    }//catch{
-//                       // print(error)
-//                    //}
+//                guard let model = try? VNCoreMLModel(for: eyesClassifier10().model) else {
+//                    fatalError("Loading CoreML model failed")
 //                }
+//                let request = VNCoreMLRequest(model: model, completionHandler: myResultsMethod)
+//                let handler = VNImageRequestHandler(ciImage: image)
+//                                    do{
+//                                        try! handler.perform([request])
+//                                    }
+                
+                let originalPic = convert(cmage: image)
+                let img_faces = detectFaces(from: originalPic)
+                for face in img_faces{
+                    //UIImageWriteToSavedPhotosAlbum(face, nil, nil, nil);
+                    
+                    let size = CGSize(width: 224, height: 224)
+                    
+                    let resizedImage = resizeImage(image: face, targetSize: size)
+                    //UIImageWriteToSavedPhotosAlbum(resizedImage, nil, nil, nil);
+                    guard let this_ciimage = CIImage(image: resizedImage) else { return }
+                    //guard let this_cgimage = face.cgImage else {return}
+                    
+
+                    guard let model = try? VNCoreMLModel(for: GenderNet().model) else{
+                        fatalError("Loading CoreML model failed")
+                    }
+                    let request = VNCoreMLRequest(model: model, completionHandler: myResultsMethod)
+                    let handler = VNImageRequestHandler(ciImage: this_ciimage)
+                    //let handler = VNImageRequestHandler(image: face)
+                    DispatchQueue.global(qos: .userInteractive).async {
+                    do{
+                        try! handler.perform([request])
+                    }
+                    }//catch{
+                       // print(error)
+                    //}
+                }
                 
                 //print(results.count)
                 let accuracy = [CIDetectorAccuracy : CIDetectorAccuracyHigh]
@@ -290,10 +301,8 @@ extension CameraViewController {
     func myResultsMethod(request: VNRequest, error: Error?) {
         guard let results = request.results as? [VNClassificationObservation]
             else { fatalError("huh") }
-        for classification in results {
-            print(classification.identifier, // the scene label
-                classification.confidence)
-        }
+        guard let first_observation = results.first else { return }
+        print(first_observation.identifier, first_observation.confidence)
         
     }
     
@@ -331,10 +340,37 @@ extension CameraViewController {
                             y: size.height > size.width ? (size.height-size.width).rounded(.down).divided(by: 2) : 0),
                                                                       size: breadthSize)) else { return nil }
                 let faceRect = CGRect(origin: .zero, size: CGSize(width: min(size.width, size.height), height: min(size.width, size.height)))
-                UIBezierPath(ovalIn: faceRect).addClip()
+                //UIBezierPath(ovalIn: faceRect).addClip()
                 UIImage(cgImage: cgImage).draw(in: faceRect)
                 return UIGraphicsGetImageFromCurrentImageContext()
             } ?? []
+    }
+    
+    //resize function from stackoverflow
+    func resizeImage(image: UIImage, targetSize: CGSize) -> UIImage {
+        let size = image.size
+        
+        let widthRatio  = targetSize.width  / size.width
+        let heightRatio = targetSize.height / size.height
+        
+        // Figure out what our orientation is, and use that to form the rectangle
+        var newSize: CGSize
+        if(widthRatio > heightRatio) {
+            newSize = CGSize(width: size.width * heightRatio, height: size.height * heightRatio)
+        } else {
+            newSize = CGSize(width: size.width * widthRatio,  height: size.height * widthRatio)
+        }
+        
+        // This is the rect that we've calculated out and this is what is actually used below
+        let rect = CGRect(x: 0, y: 0, width: newSize.width, height: newSize.height)
+        
+        // Actually do the resizing to the rect using the ImageContext stuff
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: rect)
+        let newImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return newImage!
     }
     
     func detectLandmarks(on image: CIImage) {
