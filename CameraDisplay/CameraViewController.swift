@@ -135,44 +135,13 @@ class CameraViewController : UIViewController
     }
     
     @IBAction func shutterButtonDidTap()
-    {
-        
+    { 
         //Edited by Manoj:
         if defaultMode{
             if let image = UIImage(named: "cancel.png") {
                 cameraButton.setImage(image, for:.normal)
                 reverseButton.isHidden = true;
                 defaultMode = false;
-                
-                //start capturing frames here and use model
-                //start with dataOutput
-                //then func capture output
-                
-                //Add delegate at the beginning
-                //Add the capturefunc similar to the video
-                
-                //CoreML called from captureFunc
-                //if output of model is face, (or yes) then capture photo as done below.
-                
-//                if(TAKE_PHOTO == 1) {
-//                    // Your code with delay
-//
-//                    if (!self.defaultMode){
-//                        print("take photo")
-//                    let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
-//
-//                    //capture a still image asynchronously
-//                    self.stillImageOutput?.captureStillImageAsynchronously(from: videoConnection,
-//                                                                           completionHandler: { (imageDataBuffer, error) in
-//
-//                                                                            if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer:
-//                                                                                imageDataBuffer!) {
-//                                                                                self.stillImage = UIImage(data: imageData)
-//                                                                                self.performSegue(withIdentifier: "showPhoto", sender: self)
-//                                                                            }
-//                    })
-//                    }
-//                }
             }
         } else{
             if let image = UIImage(named: "button-shutter.png") {
@@ -181,10 +150,8 @@ class CameraViewController : UIViewController
                 defaultMode = true;
             }
         }
-        
-
-
     }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "showPhoto" {
             if let image = UIImage(named: "button-shutter.png") {
@@ -196,8 +163,8 @@ class CameraViewController : UIViewController
                 imageViewController.image = self.stillImage
         }
     }
-
 }
+
 extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func captureOutput(_ output: AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
@@ -249,31 +216,6 @@ extension CameraViewController {
                      faceLandmarks.inputFaceObservations = results
                      detectLandmarks(on: image)
                 }
-                
-//            if(capturePhoto){
-//
-//                if (!self.defaultMode){
-//                    print("take photo")
-//                    let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
-//
-//                    //capture a still image asynchronously
-//                    self.stillImageOutput?.captureStillImageAsynchronously(from: videoConnection,
-//                                                                           completionHandler: { (imageDataBuffer, error) in
-//
-//                                                                            if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer:
-//                                                                                imageDataBuffer!) {
-//                                                                                self.stillImage = UIImage(data: imageData)
-//                                                                                self.performSegue(withIdentifier: "showPhoto", sender: self)
-//                                                                            }
-//                    })
-//                }
-//                //faceLandmarks.inputFaceObservations = results
-//                //detectLandmarks(on: image)
-//
-//                DispatchQueue.main.async {
-//                    self.shapeLayer.sublayers?.removeAll()
-//                }
-//            }
             }
         }
     }
@@ -286,19 +228,17 @@ extension CameraViewController {
             //let transform = CGAffineTransform(scaleX: 1, y: -1).translatedBy(x: 0, y: -self.view.frame.height)
             //let translate = CGAffineTransform.identity.scaledBy(x: self.view.frame.width, y: self.view.frame.height)
             for observation in landmarksResults {
-                //DispatchQueue.main.async {
-                    num_faces += 1
-                    let leftEye = observation.landmarks?.leftEye
-                    let output = leftEye?.normalizedPoints
-                    let width = output![4].x-output![0].x
-                    let height = output![2].y-output![6].y
-                    let ratio = height/width
-                    print(ratio)
-                    if (ratio >= 0.30) {
-                        print("eyes open")
-                        all_eyes_open += 1
-                    }
-                //}
+                num_faces += 1
+                let leftEye = observation.landmarks?.leftEye
+                let output = leftEye?.normalizedPoints
+                let width = output![4].x-output![0].x
+                let height = output![2].y-output![6].y
+                let ratio = height/width
+                print(ratio)
+                if (ratio >= 0.30) {
+                    print("eyes open")
+                    all_eyes_open += 1
+                }
             }
             if (all_eyes_open == num_faces && num_faces != 0) {
                 if (!self.defaultMode){
@@ -306,17 +246,14 @@ extension CameraViewController {
                     let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
                     
                     //capture a still image asynchronously
-                    self.stillImageOutput?.captureStillImageAsynchronously(from: videoConnection,
-                                                                           completionHandler: { (imageDataBuffer, error) in
-                                                                            
-                                                                            if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer:
-                                                                                imageDataBuffer!) {
-                                                                                self.stillImage = UIImage(data: imageData)
-                                                                                self.performSegue(withIdentifier: "showPhoto", sender: self)
-                                                                            }
+                    self.stillImageOutput?.captureStillImageAsynchronously(from: videoConnection, completionHandler: {
+                        (imageDataBuffer, error) in if let imageData = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: imageDataBuffer!, previewPhotoSampleBuffer: imageDataBuffer!) {
+                            self.stillImage = UIImage(data: imageData)
+                            self.performSegue(withIdentifier: "showPhoto", sender: self)
+                        }
                     })
                 }
             }
         }
-}
+    }
 }
