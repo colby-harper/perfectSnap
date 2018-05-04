@@ -28,6 +28,10 @@ class CameraViewController : UIViewController
     //this is what will appear on the screen so the user can see what is in the camera's view.
     var cameraPreviewLayer: AVCaptureVideoPreviewLayer?
     
+    override open var shouldAutorotate: Bool {
+        return false
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
