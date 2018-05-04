@@ -9,11 +9,10 @@ class CameraViewController : UIViewController
     let faceLandmarks = VNDetectFaceLandmarksRequest()
     let faceLandmarksDetectionRequest = VNSequenceRequestHandler()
     let faceDetectionRequest = VNSequenceRequestHandler()
-    var defaultMode = true;
+    var 🅱️ = true;
     @IBOutlet weak var cameraButton: UIButton!
     @IBOutlet weak var reverseButton: UIButton!
     var captureSession = AVCaptureSession() //this is responsible for capturing the image
-    
     
     //which camera input (front or back)
     var backCamera: AVCaptureDevice? //? makes it optional
@@ -21,7 +20,7 @@ class CameraViewController : UIViewController
     var currentCamera: AVCaptureDevice?
     
     //output device that will store the image
-    var stillImageOutput: AVCaptureStillImageOutput? //captures still image output
+    var stillImageOutput: AVCaptureStillImageOutput?
     var stillImage: UIImage? //stores still image output
     
     //camera preview layer
@@ -122,17 +121,17 @@ class CameraViewController : UIViewController
     @IBAction func shutterButtonDidTap()
     { 
         //Edited by Manoj:
-        if defaultMode{
+        if 🅱️{
             if let image = UIImage(named: "cancel.png") {
                 cameraButton.setImage(image, for:.normal)
                 reverseButton.isHidden = true;
-                defaultMode = false;
+                🅱️ = false;
             }
         } else{
             if let image = UIImage(named: "button-shutter.png") {
                 cameraButton.setImage(image, for:.normal)
                 reverseButton.isHidden = false;
-                defaultMode = true;
+                🅱️ = true;
             }
         }
     }
@@ -142,7 +141,7 @@ class CameraViewController : UIViewController
             if let image = UIImage(named: "button-shutter.png") {
                 cameraButton.setImage(image, for:.normal)
                 reverseButton.isHidden = false;
-                defaultMode = true;
+                🅱️ = true;
             }
             let imageViewController = segue.destination as! ImageViewController
                 imageViewController.image = self.stillImage
@@ -214,7 +213,7 @@ extension CameraViewController {
                 }
             }
             if (all_eyes_open == num_faces && num_faces != 0) {
-                if (!self.defaultMode){
+                if (!self.🅱️){
                     let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
                     
                     //capture a still image asynchronously
