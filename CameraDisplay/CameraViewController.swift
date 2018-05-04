@@ -52,7 +52,7 @@ class CameraViewController : UIViewController
         
         //configure the session with the output for capturing the still image
         stillImageOutput = AVCaptureStillImageOutput()
-        stillImageOutput?.outputSettings = [AVVideoCodecKey : AVVideoCodecJPEG] //iphone standard
+        stillImageOutput?.outputSettings = [AVVideoCodecKey : AVVideoCodecType.jpeg] //iphone standard
         
         do {
             //this will capture input from the currentCamera
@@ -205,7 +205,7 @@ extension CameraViewController {
                 let height = output![2].y-output![6].y
                 let ratio = height/width
                 print(ratio)
-                if (ratio >= 0.30) {
+                if (ratio >= 0.25) {
                     all_eyes_open += 1
                 }
             }
