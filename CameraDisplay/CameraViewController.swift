@@ -1,4 +1,3 @@
-//View when photo has not been captured yet.
 import UIKit
 import AVFoundation //library that has all photo capture methods
 import Vision
@@ -170,10 +169,8 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutputSampleBuffer sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         
         let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
-        
         let attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate)
         let ciImage = CIImage(cvImageBuffer: pixelBuffer!, options: attachments as! [String : Any]?)
-        
         //leftMirrored for front camera
         let ciImageWithOrientation = ciImage.applyingOrientation(Int32(UIImageOrientation.leftMirrored.rawValue))
         
@@ -188,21 +185,14 @@ extension CameraViewController {
         try? faceDetectionRequest.perform([faceDetection], on: image)
         if let results = faceDetection.results as? [VNFaceObservation] {
             if !results.isEmpty {
-                
-                
-                //print(results.count)
                 let accuracy = [CIDetectorAccuracy : CIDetectorAccuracyHigh]
                 let faceDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil, options: accuracy)
                 let faces = faceDetector?.features(in: image, options:[CIDetectorSmile:true])
-                
-                //Added by Manoj
-                //Convert faces into an array of faces
                 
                 //Only move forward if all the faces are smiling
                 let numOfFaces = faces?.count
                 var numOfSmiles = 0
                 
-                //var capturePhoto = false
                 if !faces!.isEmpty{
                     for face in faces as! [CIFaceFeature]{
                         if(face.hasSmile){
@@ -212,7 +202,6 @@ extension CameraViewController {
                 }
                 
                 if(numOfSmiles == numOfFaces && numOfFaces != 0){
-                    //capturePhoto = true
                      faceLandmarks.inputFaceObservations = results
                      detectLandmarks(on: image)
                 }
@@ -225,8 +214,7 @@ extension CameraViewController {
         if let landmarksResults = faceLandmarks.results as? [VNFaceObservation] {
             var all_eyes_open = 0
             var num_faces = 0
-            //let transform = CGAffineTransform(scaleX: 1, y: -1).translatedBy(x: 0, y: -self.view.frame.height)
-            //let translate = CGAffineTransform.identity.scaledBy(x: self.view.frame.width, y: self.view.frame.height)
+            
             for observation in landmarksResults {
                 num_faces += 1
                 let leftEye = observation.landmarks?.leftEye
@@ -236,13 +224,11 @@ extension CameraViewController {
                 let ratio = height/width
                 print(ratio)
                 if (ratio >= 0.30) {
-                    print("eyes open")
                     all_eyes_open += 1
                 }
             }
             if (all_eyes_open == num_faces && num_faces != 0) {
                 if (!self.defaultMode){
-                    print("take photo")
                     let videoConnection = self.stillImageOutput?.connection(withMediaType: AVMediaTypeVideo)
                     
                     //capture a still image asynchronously

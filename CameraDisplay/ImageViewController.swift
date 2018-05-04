@@ -22,6 +22,7 @@ class ImageViewController : UIViewController
         guard let imageToSave = image else {
             return
         }
+        //save photo
         UIImageWriteToSavedPhotosAlbum(imageToSave, nil, nil, nil)
         dismiss(animated: false, completion: nil)
     }
