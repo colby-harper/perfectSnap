@@ -157,8 +157,10 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         let attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate)
         let ciImage = CIImage(cvImageBuffer: pixelBuffer!, options: attachments as! [String : Any]?)
         //leftMirrored for front camera
-        let ciImageWithOrientation = ciImage.applyingOrientation(Int32(UIImageOrientation.leftMirrored.rawValue))
-        
+        var ciImageWithOrientation = ciImage.applyingOrientation(Int32(UIImageOrientation.leftMirrored.rawValue))
+        if(UIDevice.current.orientation == .landscapeLeft) {
+            ciImageWithOrientation = ciImageWithOrientation.applyingOrientation(6)
+        }
         detectFace(on: ciImageWithOrientation)
     }
     
@@ -207,7 +209,6 @@ extension CameraViewController {
                 let width = output![4].x-output![0].x
                 let height = output![2].y-output![6].y
                 let ratio = height/width
-                print(ratio)
                 if (ratio >= 0.25) {
                     all_eyes_open += 1
                 }

@@ -7,6 +7,10 @@ class ImageViewController : UIViewController
     
     var image: UIImage?
     
+    override open var shouldAutorotate: Bool {
+        return false
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
