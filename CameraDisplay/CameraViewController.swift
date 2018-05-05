@@ -204,12 +204,10 @@ extension CameraViewController {
             
             for observation in landmarksResults {
                 num_faces += 1
-                let leftEye = observation.landmarks?.leftEye
-                let output = leftEye?.normalizedPoints
+                let output = observation.landmarks?.leftEye?.normalizedPoints
                 let width = output![4].x-output![0].x
                 let height = output![2].y-output![6].y
-                let ratio = height/width
-                if (ratio >= 0.25) {
+                if (height/width >= 0.25) {
                     all_eyes_open += 1
                 }
             }
