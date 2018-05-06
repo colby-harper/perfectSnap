@@ -145,6 +145,7 @@ class CameraViewController : UIViewController
             }
             let imageViewController = segue.destination as! ImageViewController
                 imageViewController.image = self.stillImage
+                imageViewController.camera = self.currentCamera
         }
     }
 }
@@ -156,11 +157,9 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
         let attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate)
         let ciImage = CIImage(cvImageBuffer: pixelBuffer!, options: attachments as! [String : Any]?)
-        //var ciImageWithOrientation = ciImage.applyingOrientation(Int32(UIImageOrientation.leftMirrored.rawValue))
         var ciImageWithOrientation = ciImage
 
         if(self.currentCamera?.position == .front) {
-            //leftMirrored for front camera
             ciImageWithOrientation = ciImage.applyingOrientation(Int32(UIImageOrientation.leftMirrored.rawValue))
             if(UIDevice.current.orientation == .landscapeLeft) {
                 ciImageWithOrientation = ciImageWithOrientation.applyingOrientation(6)
