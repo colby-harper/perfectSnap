@@ -156,10 +156,29 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
         let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
         let attachments = CMCopyDictionaryOfAttachments(kCFAllocatorDefault, sampleBuffer, kCMAttachmentMode_ShouldPropagate)
         let ciImage = CIImage(cvImageBuffer: pixelBuffer!, options: attachments as! [String : Any]?)
-        //leftMirrored for front camera
-        var ciImageWithOrientation = ciImage.applyingOrientation(Int32(UIImageOrientation.leftMirrored.rawValue))
-        if(UIDevice.current.orientation == .landscapeLeft) {
-            ciImageWithOrientation = ciImageWithOrientation.applyingOrientation(6)
+        //var ciImageWithOrientation = ciImage.applyingOrientation(Int32(UIImageOrientation.leftMirrored.rawValue))
+        var ciImageWithOrientation = ciImage
+
+        if(self.currentCamera?.position == .front) {
+            //leftMirrored for front camera
+            ciImageWithOrientation = ciImage.applyingOrientation(Int32(UIImageOrientation.leftMirrored.rawValue))
+            if(UIDevice.current.orientation == .landscapeLeft) {
+                ciImageWithOrientation = ciImageWithOrientation.applyingOrientation(6)
+            }
+            else if(UIDevice.current.orientation == .landscapeRight) {
+                ciImageWithOrientation = ciImageWithOrientation.applyingOrientation(7)
+            }
+        }
+        else if(self.currentCamera?.position == .back) {
+            if(UIDevice.current.orientation == .landscapeLeft) {
+                ciImageWithOrientation = ciImageWithOrientation.applyingOrientation(2)
+            }
+            else if(UIDevice.current.orientation == .landscapeRight) {
+                ciImageWithOrientation = ciImageWithOrientation.applyingOrientation(3)
+            }
+            else {
+                ciImageWithOrientation = ciImage.applyingOrientation(Int32(UIImageOrientation.leftMirrored.rawValue))
+            }
         }
         detectFace(on: ciImageWithOrientation)
     }
